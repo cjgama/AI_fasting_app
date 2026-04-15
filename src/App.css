@@ -101,6 +101,38 @@ h1 {
   margin: 8px 0 0 0;
 }
 
+.health-effects {
+  background: var(--bg);
+  padding: 16px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.health-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 0 0 12px 0;
+}
+
+.effects-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.effect-item {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 6px 0;
+  margin: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.effect-item:last-child {
+  border-bottom: none;
+}
+
 .next-stage-info {
   margin-top: 20px;
   padding: 16px;

@@ -7,6 +7,7 @@ interface FastingStage {
   maxHours: number
   description: string
   color: string
+  healthEffects: string[]
 }
 
 const FASTING_STAGES: FastingStage[] = [
@@ -16,6 +17,12 @@ const FASTING_STAGES: FastingStage[] = [
     maxHours: 4,
     description: 'Your digestive system is working',
     color: '#4ade80',
+    healthEffects: [
+      'Insulin levels elevated',
+      'Glucose absorption in progress',
+      'Digestion and nutrient absorption',
+      'Energy from food being used',
+    ],
   },
   {
     name: 'Fat Burning',
@@ -23,6 +30,13 @@ const FASTING_STAGES: FastingStage[] = [
     maxHours: 12,
     description: 'Your body is burning stored fat',
     color: '#60a5fa',
+    healthEffects: [
+      'Glycogen stores depleting',
+      'Insulin levels normalizing',
+      'Fat mobilization beginning',
+      'Increased metabolic rate',
+      'Enhanced mental clarity',
+    ],
   },
   {
     name: 'Ketosis',
@@ -30,6 +44,15 @@ const FASTING_STAGES: FastingStage[] = [
     maxHours: 24,
     description: 'Your body is in ketosis state',
     color: '#a78bfa',
+    healthEffects: [
+      'Ketone bodies being produced',
+      'Significant weight loss potential',
+      'Brain using ketones for fuel',
+      'Reduced inflammation',
+      'Improved cognitive function',
+      'Appetite suppression',
+      'Early autophagy activation',
+    ],
   },
   {
     name: 'Deep Ketosis',
@@ -37,6 +60,16 @@ const FASTING_STAGES: FastingStage[] = [
     maxHours: Infinity,
     description: 'Extended fasting benefits',
     color: '#f87171',
+    healthEffects: [
+      'Maximum cellular autophagy',
+      'Deep cellular repair and renewal',
+      'Enhanced immune function',
+      'Significant fat loss',
+      'Mitochondrial optimization',
+      'Growth hormone elevation',
+      'Anti-aging processes active',
+      'Potential disease prevention benefits',
+    ],
   },
 ]
 
@@ -140,6 +173,15 @@ function App() {
               <div className="timer">
                 <p className="elapsed-time">{formatTime(fastingState.hoursElapsed)}</p>
                 <p className="elapsed-label">Elapsed</p>
+              </div>
+
+              <div className="health-effects">
+                <h3 className="health-title">Health Effects Active:</h3>
+                <ul className="effects-list">
+                  {fastingState.currentStage.healthEffects.map((effect, idx) => (
+                    <li key={idx} className="effect-item">{effect}</li>
+                  ))}
+                </ul>
               </div>
 
               {getNextStage() && (
