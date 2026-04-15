@@ -44,6 +44,11 @@ interface FeelingEntry {
   stage: string
 }
 
+interface User {
+  id: string
+  username: string
+}
+
 // Constants
 const FASTING_STAGES: FastingStage[] = [
   {
@@ -152,29 +157,111 @@ function App() {
     return saved ? JSON.parse(saved) : false
   })
 
+  // Auth states
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem('currentUser')
+    return saved ? JSON.parse(saved) : null
+  })
+  const [loginUsername, setLoginUsername] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
+  const [loginError, setLoginError] = useState('')
+  const [isRegistering, setIsRegistering] = useState(false)
+
   // Timer states
   const [lastMealTime, setLastMealTime] = useState<string>(
-    localStorage.getItem('lastMealTime') || ''
+    currentUser ? (localStorage.getItem(`user_${currentUser.id}_lastMealTime`) || '') : ''
   )
   const [hoursElapsed, setHoursElapsed] = useState(0)
   const [currentStage, setCurrentStage] = useState<FastingStage | null>(null)
 
   // Meal states
   const [meals, setMeals] = useState<Meal[]>(() => {
-    const saved = localStorage.getItem('meals')
+    if (!currentUser) return []
+    const saved = localStorage.getItem(`user_${currentUser.id}_meals`)
     return saved ? JSON.parse(saved) : []
   })
 
   // Feelings tracking states
   const [feelings, setFeelings] = useState<FeelingEntry[]>(() => {
-    const saved = localStorage.getItem('feelings')
+    if (!currentUser) return []
+    const saved = localStorage.getItem(`user_${currentUser.id}_feelings`)
     return saved ? JSON.parse(saved) : []
   })
   const [feedbackEnergy, setFeedbackEnergy] = useState(5)
   const [feedbackMood, setFeedbackMood] = useState('😐')
   const [feedbackNotes, setFeedbackNotes] = useState('')
 
-  // Timer effect
+  // Auth functions
+  const handleRegister = () => {
+    if (!loginUsername.trim() || !loginPassword.trim()) {
+      setLoginError('Username and password required')
+      return
+    }
+
+    const existingUsers = JSON.parse(localStorage.getItem('users') || '[]')
+    const userExists = existingUsers.some((u: User) => u.username === loginUsername)
+
+    if (userExists) {
+      setLoginError('Username already exists')
+      return
+    }
+
+    const newUser: User = {
+      id: Date.now().toString(),
+      username: loginUsername,
+    }
+
+    existingUsers.push(newUser)
+    localStorage.setItem('users', JSON.stringify(existingUsers))
+    localStorage.setItem(`user_${newUser.id}_password`, loginPassword)
+    localStorage.setItem('currentUser', JSON.stringify(newUser))
+    setCurrentUser(newUser)
+    setLoginUsername('')
+    setLoginPassword('')
+    setLoginError('')
+    setIsRegistering(false)
+  }
+
+  const handleLogin = () => {
+    if (!loginUsername.trim() || !loginPassword.trim()) {
+      setLoginError('Username and password required')
+      return
+    }
+
+    const existingUsers = JSON.parse(localStorage.getItem('users') || '[]')
+    const user = existingUsers.find((u: User) => u.username === loginUsername)
+
+    if (!user) {
+      setLoginError('User not found')
+      return
+    }
+
+    const storedPassword = localStorage.getItem(`user_${user.id}_password`)
+    if (storedPassword !== loginPassword) {
+      setLoginError('Incorrect password')
+      return
+    }
+
+    localStorage.setItem('currentUser', JSON.stringify(user))
+    setCurrentUser(user)
+    setLoginUsername('')
+    setLoginPassword('')
+    setLoginError('')
+    setIsRegistering(false)
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser')
+    setCurrentUser(null)
+    setLoginUsername('')
+    setLoginPassword('')
+    setLoginError('')
+    setLastMealTime('')
+    setMeals([])
+    setFeelings([])
+  }
+
+  // Timer states
   useEffect(() => {
     const updateTimer = () => {
       if (!lastMealTime) return
@@ -207,6 +294,19 @@ function App() {
     }
   }, [isDarkMode])
 
+  // Load user data when current user changes
+  useEffect(() => {
+    if (currentUser) {
+      const savedMeals = localStorage.getItem(`user_${currentUser.id}_meals`)
+      const savedFeelings = localStorage.getItem(`user_${currentUser.id}_feelings`)
+      const savedLastMeal = localStorage.getItem(`user_${currentUser.id}_lastMealTime`)
+      
+      setMeals(savedMeals ? JSON.parse(savedMeals) : [])
+      setFeelings(savedFeelings ? JSON.parse(savedFeelings) : [])
+      setLastMealTime(savedLastMeal || '')
+    }
+  }, [currentUser])
+
   // Helper functions
   const formatTime = (hours: number) => {
     const h = Math.floor(hours)
@@ -216,9 +316,9 @@ function App() {
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const time = e.target.value
-    if (time) {
+    if (time && currentUser) {
       setLastMealTime(time)
-      localStorage.setItem('lastMealTime', time)
+      localStorage.setItem(`user_${currentUser.id}_lastMealTime`, time)
     }
   }
 
@@ -232,7 +332,9 @@ function App() {
     }
     const updated = [...meals, newMeal]
     setMeals(updated)
-    localStorage.setItem('meals', JSON.stringify(updated))
+    if (currentUser) {
+      localStorage.setItem(`user_${currentUser.id}_meals`, JSON.stringify(updated))
+    }
   }
 
   const getTotalCalories = () => meals.reduce((sum, meal) => sum + meal.calories, 0)
@@ -252,7 +354,9 @@ function App() {
 
     const updated = [...feelings, entry]
     setFeelings(updated)
-    localStorage.setItem('feelings', JSON.stringify(updated))
+    if (currentUser) {
+      localStorage.setItem(`user_${currentUser.id}_feelings`, JSON.stringify(updated))
+    }
 
     setFeedbackNotes('')
     setFeedbackEnergy(5)
@@ -261,17 +365,74 @@ function App() {
 
   return (
     <div className={`app ${isDarkMode ? 'dark' : 'light'}`}>
-      {/* Header */}
-      <header className="header">
-        <h1>⏱️ FastingPro</h1>
-        <button
-          className="theme-toggle"
-          onClick={() => setIsDarkMode(!isDarkMode)}
-          title="Toggle theme"
-        >
-          {isDarkMode ? '☀️' : '🌙'}
-        </button>
-      </header>
+      {!currentUser ? (
+        // Login Screen
+        <main className="login-screen">
+          <div className="login-container">
+            <h1>⏱️ FastingPro</h1>
+            <p>Track your fasting journey</p>
+            
+            <div className="login-form">
+              <input
+                type="text"
+                placeholder="Username"
+                value={loginUsername}
+                onChange={(e) => setLoginUsername(e.target.value)}
+                className="login-input"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                className="login-input"
+              />
+              {loginError && <p className="login-error">{loginError}</p>}
+              
+              {!isRegistering ? (
+                <div className="login-buttons">
+                  <button onClick={handleLogin} className="btn-primary">
+                    Login
+                  </button>
+                  <button onClick={() => setIsRegistering(true)} className="btn-secondary">
+                    Create Account
+                  </button>
+                </div>
+              ) : (
+                <div className="login-buttons">
+                  <button onClick={handleRegister} className="btn-primary">
+                    Register
+                  </button>
+                  <button onClick={() => setIsRegistering(false)} className="btn-secondary">
+                    Back to Login
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </main>
+      ) : (
+        // Main App
+        <>
+          {/* Header */}
+          <header className="header">
+            <div className="header-left">
+              <h1>⏱️ FastingPro</h1>
+              <span className="user-badge">👤 {currentUser.username}</span>
+            </div>
+            <div className="header-right">
+              <button
+                className="theme-toggle"
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                title="Toggle theme"
+              >
+                {isDarkMode ? '☀️' : '🌙'}
+              </button>
+              <button onClick={handleLogout} className="logout-btn">
+                Logout
+              </button>
+            </div>
+          </header>
 
       {/* Navigation */}
       <nav className="nav">
@@ -522,9 +683,4 @@ function App() {
             </div>
           </section>
         )}
-      </main>
-    </div>
-  )
-}
-
-export default App
+      </main>\n        </>\n      )}\n    </div>\n  )\n}\n\nexport default App
