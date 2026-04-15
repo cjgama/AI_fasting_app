@@ -1,29 +1,139 @@
-.app-container {
+/* Theme Variables */
+:root {
+  --primary: #667eea;
+  --primary-dark: #764ba2;
+  --bg: #ffffff;
+  --bg-secondary: #f5f7fa;
+  --text: #1a202c;
+  --text-secondary: #718096;
+  --border: #e2e8f0;
+  --card-bg: #ffffff;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='dark'] {
+  --bg: #1a202c;
+  --bg-secondary: #2d3748;
+  --text: #e2e8f0;
+  --text-secondary: #a0aec0;
+  --border: #4a5568;
+  --card-bg: #2d3748;
+}
+
+/* Global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* App Layout */
+.app {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  padding: 30px 20px;
-  max-width: 600px;
-  margin: 0 auto;
-  min-height: 100vh;
+  background-color: var(--bg);
 }
 
-h1 {
-  font-size: 32px;
-  margin: 0;
-  text-align: center;
+/* Header */
+.header {
+  padding: 20px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 8px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow);
 }
 
-.subtitle {
-  text-align: center;
-  color: var(--text-secondary);
+.header h1 {
+  font-size: 24px;
   margin: 0;
+  font-weight: 700;
+}
+
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.3s;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-secondary);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-btn {
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
   font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.nav-btn:hover {
+  color: var(--text);
+}
+
+.nav-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+/* Content Area */
+.content {
+  flex: 1;
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.tab-content {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tab-content h2 {
+  font-size: 24px;
+  margin: 0 0 20px 0;
+  color: var(--text);
 }
 
 /* Input Section */
@@ -31,57 +141,49 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-bottom: 20px;
 }
 
 .input-section label {
   font-weight: 600;
-  color: var(--text-h);
-  font-size: 16px;
+  color: var(--text);
+  font-size: 14px;
 }
 
 .time-input {
-  padding: 14px 16px;
+  padding: 12px 16px;
   border: 2px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 16px;
   background-color: var(--bg);
   color: var(--text);
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: border-color 0.3s;
 }
 
 .time-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-/* Stage Display */
-.stage-display {
-  width: 100%;
-}
-
+/* Stage Card */
 .stage-card {
-  border-left: 6px solid #667eea;
   background: var(--card-bg);
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 6px solid var(--primary);
+  box-shadow: var(--shadow);
   text-align: center;
+  margin: 20px 0;
 }
 
-.stage-name {
+.stage-card h2 {
   font-size: 28px;
-  margin: 0 0 12px 0;
+  margin: 0 0 16px 0;
   font-weight: 700;
 }
 
-.stage-description {
-  color: var(--text-secondary);
-  margin: 0 0 24px 0;
-  font-size: 15px;
-}
-
-.timer {
+.timer-display {
   margin: 24px 0;
   padding: 24px 0;
   border-top: 1px solid var(--border);
@@ -93,6 +195,7 @@ h1 {
   font-weight: 700;
   margin: 0;
   font-variant-numeric: tabular-nums;
+  color: var(--primary);
 }
 
 .elapsed-label {
@@ -102,125 +205,292 @@ h1 {
 }
 
 .health-effects {
-  background: var(--bg);
+  background: var(--bg-secondary);
   padding: 16px;
   border-radius: 8px;
   margin: 20px 0;
+  text-align: left;
 }
 
-.health-title {
+.health-effects h3 {
   font-size: 14px;
   font-weight: 700;
-  color: var(--text-h);
   margin: 0 0 12px 0;
+  color: var(--text);
 }
 
-.effects-list {
+.health-effects ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.effect-item {
+.health-effects li {
   font-size: 13px;
   color: var(--text-secondary);
   padding: 6px 0;
-  margin: 0;
   border-bottom: 1px solid var(--border);
 }
 
-.effect-item:last-child {
+.health-effects li:last-child {
   border-bottom: none;
 }
 
-.next-stage-info {
-  margin-top: 20px;
-  padding: 16px;
-  background: var(--bg);
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-.next-stage-info p {
-  margin: 4px 0;
-}
-
-.time-until {
-  font-weight: 600;
-  color: #667eea;
-}
-
-/* Welcome Message */
-.welcome-message {
-  text-align: center;
-  padding: 40px 20px;
+/* Welcome Section */
+.welcome-section {
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  padding: 40px 20px;
   border-radius: 12px;
+  text-align: center;
   font-size: 18px;
   color: var(--text-secondary);
 }
 
-/* Stages Info */
-.stages-info {
-  margin-top: 20px;
-}
-
-.stages-info h3 {
-  font-size: 18px;
-  margin: 0 0 16px 0;
-  color: var(--text-h);
-}
-
-.stages-grid {
+/* Coach Tips Grid */
+.tips-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
 }
 
-.stage-info-card {
-  border-left: 4px solid #667eea;
-  padding: 16px 12px;
+.tip-card {
   background: var(--card-bg);
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--primary);
 }
 
-.stage-hours {
+.tip-card h3 {
+  font-size: 16px;
+  margin: 0 0 8px 0;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.tip-card .category {
   font-size: 12px;
   color: var(--text-secondary);
-  margin: 0;
   font-weight: 600;
-  opacity: 0.8;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
 }
 
-.stage-title {
+.tip-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Meals Section */
+.meals-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.recipes-list h3,
+.todays-meals h3 {
+  font-size: 16px;
+  margin: 0 0 16px 0;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.recipe-card {
+  background: var(--card-bg);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.recipe-card h4 {
+  font-size: 16px;
+  margin: 0 0 8px 0;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.recipe-card p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 12px 0;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.meals-list {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.meal-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.meal-item:last-child {
+  border-bottom: none;
+}
+
+.meal-name {
   font-size: 14px;
   font-weight: 600;
-  margin: 6px 0 0 0;
-  color: var(--text-h);
+  color: var(--text);
+  margin: 0;
 }
 
-/* Responsive Design */
-@media (max-width: 480px) {
-  .app-container {
-    padding: 20px 16px;
-    gap: 24px;
+.meal-time {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 4px 0 0 0;
+}
+
+.meal-stats {
+  text-align: right;
+}
+
+.meal-stats p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 2px 0;
+}
+
+.summary {
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Stats Grid */
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.stat-card {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  border-top: 4px solid var(--primary);
+}
+
+.stat-card h3 {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0 0 12px 0;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 8px 0 0 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .meals-section {
+    grid-template-columns: 1fr;
   }
 
-  h1 {
-    font-size: 28px;
+  .tips-grid {
+    grid-template-columns: 1fr;
   }
 
-  .stage-card {
-    padding: 20px;
+  .header {
+    padding: 16px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .content {
+    padding: 16px;
   }
 
   .elapsed-time {
     font-size: 40px;
   }
 
-  .stages-grid {
-    grid-template-columns: 1fr;
+  .stage-card {
+    padding: 20px;
   }
 }
+
+@media (max-width: 480px) {
+  .nav {
+    gap: 4px;
+  }
+
+  .nav-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .stats-container {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tip-card {
+    padding: 16px;
+  }
+
+  .elapsed-time {
+    font-size: 32px;
+  }
+
+  .stage-card h2 {
+    font-size: 22px;
+  }
+}
+
 
