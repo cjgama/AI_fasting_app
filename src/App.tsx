@@ -35,6 +35,15 @@ interface Recipe {
   prepTime: number
 }
 
+interface FeelingEntry {
+  id: string
+  timestamp: string
+  energy: number
+  mood: string
+  notes: string
+  stage: string
+}
+
 // Constants
 const FASTING_STAGES: FastingStage[] = [
   {
@@ -137,7 +146,7 @@ const RECIPES: Recipe[] = [
 ]
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'timer' | 'coach' | 'meals' | 'stats'>('timer')
+  const [activeTab, setActiveTab] = useState<'timer' | 'coach' | 'meals' | 'stats' | 'feelings'>('timer')
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const saved = localStorage.getItem('darkMode')
     return saved ? JSON.parse(saved) : false
@@ -155,6 +164,15 @@ function App() {
     const saved = localStorage.getItem('meals')
     return saved ? JSON.parse(saved) : []
   })
+
+  // Feelings tracking states
+  const [feelings, setFeelings] = useState<FeelingEntry[]>(() => {
+    const saved = localStorage.getItem('feelings')
+    return saved ? JSON.parse(saved) : []
+  })
+  const [feedbackEnergy, setFeedbackEnergy] = useState(5)
+  const [feedbackMood, setFeedbackMood] = useState('😐')
+  const [feedbackNotes, setFeedbackNotes] = useState('')
 
   // Timer effect
   useEffect(() => {
@@ -220,6 +238,27 @@ function App() {
   const getTotalCalories = () => meals.reduce((sum, meal) => sum + meal.calories, 0)
   const getTotalProtein = () => meals.reduce((sum, meal) => sum + meal.protein, 0)
 
+  const addFeeling = () => {
+    if (!feedbackNotes.trim()) return
+
+    const entry: FeelingEntry = {
+      id: Date.now().toString(),
+      timestamp: new Date().toLocaleString(),
+      energy: feedbackEnergy,
+      mood: feedbackMood,
+      notes: feedbackNotes,
+      stage: currentStage?.name || 'Not fasting',
+    }
+
+    const updated = [...feelings, entry]
+    setFeelings(updated)
+    localStorage.setItem('feelings', JSON.stringify(updated))
+
+    setFeedbackNotes('')
+    setFeedbackEnergy(5)
+    setFeedbackMood('😐')
+  }
+
   return (
     <div className={`app ${isDarkMode ? 'dark' : 'light'}`}>
       {/* Header */}
@@ -259,6 +298,12 @@ function App() {
           onClick={() => setActiveTab('stats')}
         >
           📊 Stats
+        </button>
+        <button
+          className={`nav-btn ${activeTab === 'feelings' ? 'active' : ''}`}
+          onClick={() => setActiveTab('feelings')}
+        >
+          💭 How I Feel
         </button>
       </nav>
 
@@ -402,6 +447,78 @@ function App() {
                 <p className="stat-value">{getTotalProtein()}g</p>
                 <p className="stat-label">Today</p>
               </div>
+            </div>
+          </section>
+        )}
+
+        {/* Feelings Tab */}
+        {activeTab === 'feelings' && (
+          <section className="tab-content">
+            <h2>💭 How I Feel</h2>
+
+            <div className="feeling-input">
+              <div className="input-group">
+                <label>Energy Level: {feedbackEnergy}/10</label>
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  value={feedbackEnergy}
+                  onChange={(e) => setFeedbackEnergy(Number(e.target.value))}
+                  className="slider"
+                />
+              </div>
+
+              <div className="mood-selector">
+                <label>Mood:</label>
+                <div className="mood-buttons">
+                  {['😊', '😐', '😤', '😫', '🤩'].map((emoji) => (
+                    <button
+                      key={emoji}
+                      className={`mood-btn ${feedbackMood === emoji ? 'active' : ''}`}
+                      onClick={() => setFeedbackMood(emoji)}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="input-group">
+                <label htmlFor="notes">Notes (how are you feeling?)</label>
+                <textarea
+                  id="notes"
+                  value={feedbackNotes}
+                  onChange={(e) => setFeedbackNotes(e.target.value)}
+                  placeholder="e.g., Feeling energized, experiencing hunger, clear mind..."
+                  className="textarea"
+                />
+              </div>
+
+              <button className="btn-primary" onClick={addFeeling}>
+                Log How I Feel
+              </button>
+            </div>
+
+            <div className="feelings-history">
+              <h3>Your Entries</h3>
+              {feelings.length > 0 ? (
+                <div className="entries-list">
+                  {[...feelings].reverse().map((entry) => (
+                    <div key={entry.id} className="feeling-card">
+                      <div className="entry-header">
+                        <span className="mood-emoji">{entry.mood}</span>
+                        <span className="energy">Energy: {entry.energy}/10</span>
+                        <span className="stage-badge">{entry.stage}</span>
+                      </div>
+                      <p className="timestamp">{entry.timestamp}</p>
+                      <p className="notes">{entry.notes}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="empty-state">No entries yet. Start logging how you feel!</p>
+              )}
             </div>
           </section>
         )}
