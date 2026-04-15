@@ -157,6 +157,8 @@ const FOOD_ITEMS: FoodItem[] = [
   { id: 'greek-yogurt-cup', name: 'Greek Yogurt', category: 'Dairy', serving: '1 cup Greek yogurt', calories: 100, protein: 17 },
   { id: 'cottage-cheese-cup', name: 'Cottage Cheese', category: 'Dairy', serving: '1 cup cottage cheese', calories: 206, protein: 28 },
   { id: 'feta-portion', name: 'Feta Cheese', category: 'Dairy', serving: '1 portion feta (50 g)', calories: 132, protein: 7 },
+  { id: 'cheddar-slice', name: 'Cheese', category: 'Dairy', serving: '1 slice cheese (20 g)', calories: 80, protein: 5 },
+  { id: 'lean-prosciutto', name: 'Lean Prosciutto', category: 'Protein', serving: '3 thin slices (30 g)', calories: 70, protein: 9 },
   { id: 'almond-handful', name: 'Almonds', category: 'Healthy Fat', serving: '1 handful almonds (28 g)', calories: 164, protein: 6 },
   { id: 'walnut-handful', name: 'Walnuts', category: 'Healthy Fat', serving: '1 handful walnuts (28 g)', calories: 185, protein: 4.3 },
   { id: 'peanut-butter-spoon', name: 'Peanut Butter', category: 'Healthy Fat', serving: '1 serving peanut butter (2 tbsp)', calories: 188, protein: 8 },
