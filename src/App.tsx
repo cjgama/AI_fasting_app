@@ -683,4 +683,11 @@ function App() {
             </div>
           </section>
         )}
-      </main>\n        </>\n      )}\n    </div>\n  )\n}\n\nexport default App
+      </main>
+        </>
+      )}
+    </div>
+  )
+}
+
+export default App
