@@ -1371,27 +1371,6 @@ function App() {
                       Add To Current Eating Window
                     </button>
                   </div>
-
-                  <div className="food-catalog-panel">
-                    <h3>Expanded Food Catalog</h3>
-                    <div className="food-catalog-grid">
-                      {filteredFoodItems.map((item) => (
-                        <button
-                          key={item.id}
-                          type="button"
-                          className={`food-card ${selectedFoodItemId === item.id ? 'active' : ''}`}
-                          onClick={() => setSelectedFoodItemId(item.id)}
-                        >
-                          <span className="food-card-title">{item.name}</span>
-                          <span className="food-card-meta">{item.category}</span>
-                          <span className="food-card-meta">{item.serving}</span>
-                          <span className="food-card-meta">
-                            {item.calories} cal | {item.protein}g protein
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
                 </div>
 
                 <div className="meals-log-panel">
