@@ -1,0 +1,194 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 30px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 32px;
+  margin: 0;
+  text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Input Section */
+.input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-section label {
+  font-weight: 600;
+  color: var(--text-h);
+  font-size: 16px;
+}
+
+.time-input {
+  padding: 14px 16px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.time-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Stage Display */
+.stage-display {
+  width: 100%;
+}
+
+.stage-card {
+  border-left: 6px solid #667eea;
+  background: var(--card-bg);
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.stage-name {
+  font-size: 28px;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+
+.stage-description {
+  color: var(--text-secondary);
+  margin: 0 0 24px 0;
+  font-size: 15px;
+}
+
+.timer {
+  margin: 24px 0;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.elapsed-time {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.elapsed-label {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 8px 0 0 0;
+}
+
+.next-stage-info {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--bg);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.next-stage-info p {
+  margin: 4px 0;
+}
+
+.time-until {
+  font-weight: 600;
+  color: #667eea;
+}
+
+/* Welcome Message */
+.welcome-message {
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 12px;
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+/* Stages Info */
+.stages-info {
+  margin-top: 20px;
+}
+
+.stages-info h3 {
+  font-size: 18px;
+  margin: 0 0 16px 0;
+  color: var(--text-h);
+}
+
+.stages-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stage-info-card {
+  border-left: 4px solid #667eea;
+  padding: 16px 12px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.stage-hours {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.stage-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 6px 0 0 0;
+  color: var(--text-h);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .app-container {
+    padding: 20px 16px;
+    gap: 24px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  .stage-card {
+    padding: 20px;
+  }
+
+  .elapsed-time {
+    font-size: 40px;
+  }
+
+  .stages-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
